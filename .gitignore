@@ -1,0 +1,39 @@
+# Build output
+build/
+dist/
+out/
+SlinkyNative/build/
+
+# Release archives
+*.zip
+*.rar
+release-archives/
+
+# Visual Studio and other editors
+.vs/
+*.user
+*.suo
+.idea/
+*.iml
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Windows junk
+Thumbs.db
+Desktop.ini
+
+# Python bytecode (the audit scripts are run, not imported)
+__pycache__/
+
+# slinkyFX staging
+/tmp/slinky-*
+/tmp140/
+
+# Downloaded toolchain (large, can be re-downloaded)
+tools/llvm/
+.sysroot/
+tools/ninja/
+tools/llvm-download/
+tools/ninja-download/

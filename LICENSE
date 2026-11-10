@@ -1,0 +1,35 @@
+NOTICE ON PROVENANCE
+
+slinkyFX is built using reverse-engineered, decompiled and recovered code from slinky,
+which Skid Solutions sourced. That foundation is not original work, and credit and
+recognition for it belong to Skid Solutions.
+
+The MIT grant below applies to the parts of this repository that slinkyFX wrote: the
+loader (Slinky/), the native engine (SlinkyNative/src/engine/) and the build tooling and
+documentation. It does not apply to, and this project does not claim to license, the
+recovered slinky code it is built on, which carries no license of its own. Nothing here
+grants any right to slinky or to its code. Credit for the recovered foundation: Skid Solutions.
+
+---
+
+MIT License
+
+Copyright (c) 2026 slinkyFX
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

@@ -1,0 +1,5 @@
+#include "include/Resource.h"
+
+#ifdef EMBED_BUNDLED_DLL
+IDR_BUNDLED_DLL RCDATA "slinky-native.dll"
+#endif
