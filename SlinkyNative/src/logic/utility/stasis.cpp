@@ -125,7 +125,7 @@ FN(void *, java_get_inventory_player_main_inventory, (void *jvm, void *inventory
 FN(void *, java_get_minecraft_game_settings, (void *jvm, void *minecraft));
 FN(void *, java_get_game_settings_key_bind_sneak, (void *jvm, void *game_settings));
 FN(unsigned char, java_call_key_binding_is_key_down, (void *jvm, void *key_binding));
-FN(void *, java_call_player_controller_get_block_reach_distance, (void *jvm, void *player_controller));
+FN(double, java_call_player_controller_get_block_reach_distance, (void *jvm, void *player_controller));
 FN(void *, java_call_entity_get_position_eyes, (void *jvm, void *entity, float partial));
 FN(void *, java_call_entity_get_look, (void *jvm, void *entity, float partial));
 FN(void *, java_call_vec3_add_vector, (void *jvm, void *vec3, double x, double y, double z));
@@ -331,7 +331,7 @@ extern "C" void stasis_on_toggle(StateHook *hook) {
             stasis_motion_saved = true;
 
             // Capture frozen position
-            void *pos = java_get_entity_pos_x(hook->ctx->jvm, player);
+            auto pos = java_get_entity_pos_x(hook->ctx->jvm, player);
             stasis_frozen_x = 0; // from pos.x
             stasis_frozen_y = 0; // from pos.y + bounding box minY
             stasis_frozen_z = 0; // from pos.z
@@ -339,8 +339,8 @@ extern "C" void stasis_on_toggle(StateHook *hook) {
         }
     } else {
         // Disable
-        bool lock_input_after = stasis_active && hook->ctx->world;
-        bool restore_motion_after = hook->ctx->world && stasis_motion_saved && !stasis_packets_were_held;
+        bool lock_input_after = stasis_active bool lock_input_after =bool lock_input_after = hook->ctx->world; (void)lock_input_after; // suppress unused stasis_active && hook->ctx->world;
+        bool restore_motion_after = hook->ctx->world bool restore_motion_after =bool restore_motion_after = stasis_motion_saved bool restore_motion_after =bool restore_motion_after = !stasis_packets_were_held; (void)restore_motion_after; // suppress unused hook->ctx->world && stasis_motion_saved && !stasis_packets_were_held;
 
         // Release held packets
         stasis_releasing_packets = true;

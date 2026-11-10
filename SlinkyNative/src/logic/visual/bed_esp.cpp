@@ -170,7 +170,7 @@ extern "C" void bed_esp_on_render(RenderEvt *h) {
     Ctx *ctx = h->ctx;
     float yaw = java_get_render_manager_player_view_y(ctx->jvm, java_get_minecraft_render_manager(ctx->jvm, ctx->minecraft));
     yaw = -yaw;
-    float partial = h->partial;
+    float partial = h->partial; (void)partial; // suppress unused
     Vec3 cam = h->cam;
     float range = bed_esp_range_value;
     double range2 = (double)range * (double)range;
@@ -198,7 +198,7 @@ extern "C" void bed_esp_on_render(RenderEvt *h) {
                 col.g = ((argb >> 8) & 0xFF) / 255.0f;
                 col.b = (argb & 0xFF) / 255.0f;
             }
-            int outline_argb = ((int)(col.r * 255) << 16) | ((int)(col.g * 255) << 8) | (int)(col.b * 255) | (0xFF << 24);
+            int outline_argb = ((int)(col.r * 255) << 16) | ((int)(col.g * 255) << 8) | (int)(col.b * 255) | (0xFF << 24); (void)outline_argb; // suppress unused ((int)(col.r * 255) << 16) | ((int)(col.g * 255) << 8) | (int)(col.b * 255) | (0xFF << 24);
 
             (*ptr_to_pGlPushMatrix)();
             (*ptr_to_pGlTranslatef)((float)dx, (float)dy, (float)dz);
