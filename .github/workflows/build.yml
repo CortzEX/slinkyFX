@@ -1,0 +1,114 @@
+name: Build slinkyFX
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install LLVM (clang-cl, lld-link, llvm-dlltool, llvm-mt) + Ninja
+        shell: pwsh
+        run: |
+          choco install llvm ninja -y --no-progress
+          "C:\Program Files\LLVM\bin" >> $env:GITHUB_PATH
+          "C:\ProgramData\chocolatey\bin" >> $env:GITHUB_PATH
+          clang-cl --version
+          lld-link --version | Select-Object -First 1
+          ninja --version
+
+      - name: Configure SlinkyNative
+        shell: cmd
+        run: |
+          cmake -S SlinkyNative -B build/SlinkyNative -G Ninja ^
+            -DCMAKE_C_COMPILER=clang-cl ^
+            -DCMAKE_CXX_COMPILER=clang-cl ^
+            -DCMAKE_LINKER=lld-link ^
+            -DCMAKE_AR=llvm-lib ^
+            -DCMAKE_RC_COMPILER=llvm-rc ^
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build slinky-native.dll
+        shell: cmd
+        run: |
+          cmake --build build/SlinkyNative --config Release --parallel 4
+          dir build\SlinkyNative\slinky-native.dll
+
+      - name: Configure Slinky (loader)
+        shell: cmd
+        run: |
+          cmake -S Slinky -B build/Slinky -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build slinky-loader.exe
+        shell: cmd
+        run: |
+          cmake --build build/Slinky --config Release
+          dir build\Slinky\Release\slinky-loader.exe
+
+      - name: Verify and copy to dist
+        shell: pwsh
+        run: |
+          mkdir dist -Force
+          cp build/SlinkyNative/slinky-native.dll dist/
+          cp build/Slinky/Release/slinky-loader.exe dist/
+          ls dist/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: slinkyFX-windows
+          path: dist/
+          if-no-files-found: error
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang lld llvm ninja-build cmake python3
+
+      - name: Configure SlinkyNative (Linux engine)
+        run: |
+          cmake -S SlinkyNative -B build/SlinkyNative -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build libslinky-native.so
+        run: |
+          cmake --build build/SlinkyNative -j4
+          ls -la build/SlinkyNative/libslinky-native.so
+
+      - name: Configure Slinky (loader)
+        run: |
+          cmake -S Slinky -B build/Slinky -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build slinky-loader
+        run: |
+          cmake --build build/Slinky -j4
+          ls -la build/Slinky/slinky-loader
+
+      - name: Build Linux engine (libslinky-engine.so)
+        run: |
+          bash tools/build-linux-engine.sh
+
+      - name: Verify and copy to dist
+        run: |
+          mkdir -p dist
+          cp build/SlinkyNative/libslinky-native.so dist/
+          cp build/Slinky/slinky-loader dist/
+          cp build/linux-engine/libslinky-engine.so dist/
+          ls -la dist/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: slinkyFX-linux
+          path: dist/
+          if-no-files-found: error
