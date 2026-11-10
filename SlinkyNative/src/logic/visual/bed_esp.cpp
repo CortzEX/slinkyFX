@@ -42,6 +42,7 @@ extern "C" unsigned char bed_esp_show_block_count;
 extern "C" unsigned char bed_esp_exposed_outline;
 extern "C" unsigned char bed_esp_outline_exposed_layers;
 extern "C" unsigned bed_esp_bed_team_color_mode;
+extern "C" unsigned char bed_esp_exposed_color_setting[];
 
 extern "C" unsigned long long bed_esp_plate_count, bed_esp_plate_cap;
 extern "C" BedPlate *bed_esp_plates;
@@ -78,6 +79,10 @@ extern "C" void (**ptr_to_pGlDisableClientState)(unsigned);
 FN(void, libc_free, (void *ptr));
 FN(void *, libc_calloc, (unsigned long long n, unsigned long long size));
 FN(void *, libc_realloc, (void *ptr, unsigned long long size));
+FN(double, libc_sqrt, (double x));
+FN(double, libc_fmax, (double x, double y));
+FN(double, libc_fmin, (double x, double y));
+FN(int, libc_sprintf, (char *str, const char *format, ...));
 FN(int, java_call_object_hash_code, (void *jvm, void *world));
 FN(void *, get_block_state_id, (void *jvm, void *block_state));
 FN(int, get_block_id, (void *jvm, void *block_state_id));
@@ -89,7 +94,6 @@ FN(void *, java_call_entity_get_command_sender_name, (void *jvm, void *entity));
 FN(void *, java_jni_is_instance_of_entity_living_base, (void *jvm, void *entity));
 FN(void *, java_call_entity_living_base_get_team, (void *jvm, void *entity_living_base));
 FN(void *, java_jni_is_instance_of_score_player_team, (void *jvm, void *team));
-FN(jstring, java_get_score_player_team, (void *jvm, void *score_player_team));
 FN(int, entity_name_colour, (void *jvm, void *entity));
 FN(Color3, minecraft_color_code_to_rgb, (int team));
 FN(void, bed_esp_queue_loaded_chunks, (Ctx *ctx));
@@ -216,12 +220,12 @@ extern "C" void bed_esp_on_render(RenderEvt *h) {
             float base_scale = bed_esp_scale_value * 0.02f;
             float scale = base_scale;
             if (bed_esp_auto_scale) {
-                float dist = (float)sqrt(cx * cx + cy * cy + cz * cz);
-                float ref_dist = fmaxf(1.0f, dist);
+                float dist = (float)libc_sqrt(cx * cx + cy * cy + cz * cz);
+                float ref_dist = libc_fmax(1.0, dist);
                 scale = base_scale * (ref_dist / auto_scale_reference);
-                scale = fmaxf(base_scale, scale);
+                scale = libc_fmax(base_scale, scale);
             }
-            scale = fminf(scale, 16.0f);
+            scale = libc_fmin(scale, 16.0);
 
             float rounding = bed_esp_rounding_value * scale;
             int opacity = (int)bed_esp_opacity_value * 2.55f;
@@ -255,7 +259,7 @@ extern "C" void bed_esp_on_render(RenderEvt *h) {
 
                 if (bed_esp_show_block_count && entry->count > 1) {
                     char buf[16];
-                    sprintf(buf, "%d", entry->count);
+                    libc_sprintf(buf, "%d", entry->count);
                     float font_h = 0;
                     float font_w = 0;
                     bed_esp_get_font_height("Modern", &font_h);

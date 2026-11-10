@@ -50,7 +50,7 @@ extern "C" void **stasis_held_packets;
 
 struct PktHook { char padding_00[8]; Ctx *ctx; void *ev; char padding_18[12]; int verdict; };
 struct PhaseHook { char padding_00[8]; Ctx *ctx; unsigned char phase; };
-struct StateHook { char padding_00[16]; void *ev; unsigned char on; };
+struct StateHook { char padding_00[8]; Ctx *ctx; void *ev; unsigned char on; };
 struct MoveHook { char padding_00[8]; Ctx *ctx; float forward, strafe; bool jump, sneak; };
 struct ClickHook { char padding_00[8]; Ctx *ctx; void *target; bool cancelled; };
 
@@ -178,7 +178,7 @@ static inline __attribute__((always_inline)) bool try_place_through_wall(Ctx *ct
     if (!item_block_check) return false;
 
     void *player_controller = java_get_minecraft_player_controller(ctx->jvm, ctx->minecraft);
-    double reach = (double)java_call_player_controller_get_block_reach_distance(ctx->jvm, player_controller);
+    double reach = java_call_player_controller_get_block_reach_distance(ctx->jvm, player_controller);
 
     void *eyes = java_call_entity_get_position_eyes(ctx->jvm, player, 1.0f);
     void *look = java_call_entity_get_look(ctx->jvm, player, 1.0f);
